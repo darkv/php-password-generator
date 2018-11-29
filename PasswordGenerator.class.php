@@ -38,9 +38,9 @@ class PasswordGenerator {
 	 *   <dd>The maxinum length of characters a word must have.</dd>
 	 * </dl>
 	 *
-	 * @param array optional config array
-	 * @param boolean true if data from URL should be fetched, false to use
-	 * only cached wordlist; defaults to true
+	 * @param array $params optional config array
+	 * @param boolean $fetch true if data from URL should be fetched, false to
+	 * use only cached wordlist; defaults to true
 	 *
 	 * @throws InvalidArgumentException if the URL is not valid
 	 */
