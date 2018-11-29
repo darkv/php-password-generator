@@ -103,10 +103,11 @@ class PasswordGenerator {
 	}
 
 	/**
-	 * Generates a password and returns it. If the used wordlist is empty and no
-	 * password can be generated the value null is returned.
+	 * Generates a password and returns it.
 	 *
-	 * @return string|null generated password or null if there is no wordlist
+	 * @throws Exception if no wordlist is present
+	 *
+	 * @return string generated password or null if there is no wordlist
 	 */
 	public function generate() {
 		$listlength = count($this->wordlist);
@@ -114,7 +115,7 @@ class PasswordGenerator {
 			$this->read_wordlist();
 			$listlength = count($this->wordlist);
 			if ($listlength < 1) {
-				return null;
+				throw new Exception('Missing wordlist.');
 			}
 		}
 
