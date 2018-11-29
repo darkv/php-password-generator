@@ -103,13 +103,32 @@ class PasswordGenerator {
 	}
 
 	/**
-	 * Generates a password and returns it.
+	 * Generates a password and returns it. You can control the pattern
+	 * used for generating passwords by passing a custom pattern string
+	 * to this function. The pattern consists of control characters:
+	 * <dl>
+	 *   <dt>i</dt>
+	 *   <dd>An integer between 1 and 999.</dd>
+	 *   <dt>s</dt>
+	 *   <dd>A punctuation character (ASCII codes 33 to 47).</dd>
+	 *   <dt>w</dt>
+	 *   <dd>A word from the wordlist.</dd>
+	 * </dl>
+	 * The pattern must contain at least one control character and may
+	 * contain an arbitrary number of them. The default pattern used is
+	 * 'wisw'.
+	 *
+	 * @param string $pattern the password pattern to use; defaults to 'wisw'
 	 *
 	 * @throws Exception if no wordlist is present
+	 * @throws InvalidArgumentException if the given pattern is invalid
 	 *
 	 * @return string generated password or null if there is no wordlist
 	 */
-	public function generate() {
+	public function generate($pattern = 'wisw') {
+		if (!preg_match('#^[isw]+$#', $pattern)) {
+			throw new InvalidArgumentException("Invalid pattern: '$pattern'");
+		}
 		$listlength = count($this->wordlist);
 		if ($listlength < 1) {
 			$this->read_wordlist();
@@ -119,14 +138,24 @@ class PasswordGenerator {
 			}
 		}
 
-		$words = [];
-		$times = 2;
-		while ($times--) {
-			$r = $this->random_int(0, $listlength - 1);
-			$words[] = $this->wordlist[$r];
+		$result = '';
+		$chars = str_split($pattern);
+		foreach($chars as $char) {
+			switch ($char) {
+				case 'i':
+					$result .= $this->random_int(1, 999);
+					break;
+				case 's':
+					$result .= chr($this->random_int(33, 47));
+					break;
+				case 'w':
+					$r = $this->random_int(0, $listlength - 1);
+					$result .= $this->wordlist[$r];
+					break;
+			}
 		}
 
-		return $words[0] . $this->random_int(1, 999) . chr($this->random_int(33, 47)) . $words[1];
+		return $result;
 	}
 
 	private function populate_wordlist() {
