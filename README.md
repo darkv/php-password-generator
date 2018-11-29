@@ -22,13 +22,16 @@ This class works with PHP &gt;= 5.4 and needs a working internet connection.
 
 ### Password Syntax
 
-The generated passwords follow a specific syntax:
+The syntax of generated passwords can be defined by a pattern. That pattern consists of control characters that define the construction of the password string. The available control characters are:
 
-```
-<random word><number between 1 and 999><special character><random word>
-```
+* **i**
+  An integer between 1 and 999.
+* **s**
+  A punctuation character (ASCII codes 33 to 47).
+* **w**
+  A word from the wordlist.
 
-Some examples of generated passwords:
+If you don't provide your own pattern the default pattern **wisw** is used. Some examples of generated passwords with that default pattern are:
 
 * Theyre778+Breakthrough
 * Reforms13)Translated

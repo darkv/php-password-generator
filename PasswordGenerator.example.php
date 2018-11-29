@@ -29,4 +29,7 @@ $gen = new PasswordGenerator([
 // generate a password
 echo $gen->generate(), "\n";
 
+// generate a password with custom pattern
+echo $gen->generate('wiwsw'), "\n";
+
 ?>
