@@ -24,11 +24,11 @@ This class works with PHP &gt;= 5.4 and needs a working internet connection.
 
 The syntax of generated passwords can be defined by a pattern. That pattern consists of control characters that define the construction of the password string. The available control characters are:
 
-* **i**
+* **i**  
   An integer between 1 and 999.
-* **s**
+* **s**  
   A punctuation character (ASCII codes 33 to 47).
-* **w**
+* **w**  
   A word from the wordlist.
 
 If you don't provide your own pattern the default pattern **wisw** is used. Some examples of generated passwords with that default pattern are:
