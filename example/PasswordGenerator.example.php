@@ -1,7 +1,15 @@
 <?php
 
-include 'PasswordGenerator.class.php';
+declare(strict_types=1);
 
+/**
+ * The following examples show the usage if the Password Generator.
+ *
+ */
+
+include dirname(__DIR__) . '/src/PasswordGenerator.php';
+
+use \Darkv\PhpPasswordGenerator\PasswordGenerator;
 
 // create instance with German word list
 $gen = PasswordGenerator::DE();
@@ -22,14 +30,12 @@ echo $gen->generate(), "\n";
 
 // new instance with custom params
 $gen = new PasswordGenerator([
-	'url'       => 'http://www.tagesschau.de/newsticker.rdf',
-	'minlength' => 3,
-	'maxlength' => 6,
+    'url'       => 'http://www.tagesschau.de/newsticker.rdf',
+    'minlength' => 3,
+    'maxlength' => 6,
 ]);
 // generate a password
 echo $gen->generate(), "\n";
 
 // generate a password with custom pattern
 echo $gen->generate('wiwsw'), "\n";
-
-?>
