@@ -1,6 +1,6 @@
 # php-password-generator
 
-The PHP class PasswordGenerator serves as a password generator to create memorable passwords like the macOS keychain does.
+The PHP class PasswordGenerator serves as a password generator to create memorable passwords like the keychain of macOS ≤ 10.14 did.
 
 ## Getting Started
 
@@ -73,8 +73,7 @@ $gen = new PasswordGenerator([
 ]);
 ```
 
-The params *minLength* and *maxLength* denote the allowed lengths of the words from the URL source to get into the word list. If a word list has been successfully built that 
-list is saved into the file `wordlist.json`. The next time you create an instance of PasswordGenerator and the URL source cannot be contacted or does not contain any usable words that cached list is loaded instead. If you reuse the very same instance the word list is reused so no further HTTP requests are generated.
+The params *minLength* and *maxLength* denote the allowed lengths of the words from the URL source to get into the word list. If a word list has been successfully built that list is saved into the file `wordlist.json`. The next time you create an instance of PasswordGenerator and the URL source cannot be contacted or does not contain any usable words that cached list is loaded instead. If you reuse the very same instance the word list is reused so no further HTTP requests are generated.
 
 ```php
 include 'PasswordGenerator.php';

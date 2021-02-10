@@ -10,7 +10,7 @@ use InvalidArgumentException;
 
 /**
  * A password generator that generates memorable passwords similar to the
- * macOS keychain. For this it uses a public RSS feed to build up a list of
+ * keychain of macOS ≤ 10.14. For this it uses a public RSS feed to build up a list of
  * words to be used in passwords.
  *
  * After successfully creating a list of words that list is written to disk
