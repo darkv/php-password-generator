@@ -30,9 +30,9 @@ echo $gen->generate(), "\n";
 
 // new instance with custom params
 $gen = new PasswordGenerator([
-    'url'       => 'http://www.tagesschau.de/newsticker.rdf',
-    'minlength' => 3,
-    'maxlength' => 6,
+    'url'       => 'https://www.tagesschau.de/newsticker.rdf',
+    'minLength' => 3,
+    'maxLength' => 6,
 ]);
 // generate a password
 echo $gen->generate(), "\n";
