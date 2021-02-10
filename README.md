@@ -31,7 +31,7 @@ echo $gen->generate();
 
 ### Prerequisites
 
-This class works with PHP &gt;= 5.4 and needs a working internet connection.
+This class works with PHP &gt;= 7.4 and needs a working internet connection.
 
 ### Password Syntax
 
