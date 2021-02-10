@@ -219,34 +219,19 @@ class PasswordGenerator
         foreach ($chars as $char) {
             switch ($char) {
                 case 'i':
-                    $result .= $this->random_int(1, 999);
+                    $result .= random_int(1, 999);
                     break;
                 case 's':
-                    $result .= chr($this->random_int(33, 47));
+                    $result .= chr(random_int(33, 47));
                     break;
                 case 'w':
-                    $r = $this->random_int(0, $listlength - 1);
+                    $r = random_int(0, $listlength - 1);
                     $result .= $this->wordList[$r];
                     break;
             }
         }
 
         return $result;
-    }
-
-    /**
-     * Generates a random integer
-     * @param int $low
-     * @param int $high
-     * @return int
-     * @throws Exception
-     */
-    private function random_int(int $low, int $high): int
-    {
-        if (version_compare(PHP_VERSION, '7.0.0', '<')) {
-            return rand($low, $high);
-        }
-        return random_int($low, $high);
     }
 
 }
