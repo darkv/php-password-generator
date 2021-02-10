@@ -106,7 +106,7 @@ class PasswordGenerator
      * @param $url
      * @return bool|string
      */
-    private function get_url_data(string $url): bool|string
+    private function get_url_data(string $url): string
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -115,7 +115,7 @@ class PasswordGenerator
         $data = curl_exec($ch);
         curl_close($ch);
 
-        return $data;
+        return is_bool($data) ? '' : $data;
     }
 
     /**
