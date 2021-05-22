@@ -175,7 +175,7 @@ class PasswordGenerator
      * @static
      * @return PasswordGenerator configured instance that uses cache only
      */
-    public static function CACHED(?string $wordCacheFile): PasswordGenerator
+    public static function CACHED(string $wordCacheFile = null): PasswordGenerator
     {
         $a = [];
         if ( !empty($wordCacheFile) ) {
