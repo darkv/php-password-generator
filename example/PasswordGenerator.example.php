@@ -33,9 +33,21 @@ $gen = new PasswordGenerator([
     'url'       => 'https://www.tagesschau.de/newsticker.rdf',
     'minLength' => 3,
     'maxLength' => 6,
-]);
+],false);
 // generate a password
 echo $gen->generate(), "\n";
+
+// new instance with custom file location
+// only retrieve wordlist from internet when needed
+$gen = new PasswordGenerator([
+    'wordCacheFile'=>'mywords.json',
+    'url'       => 'https://www.tagesschau.de/newsticker.rdf',
+    'minLength' => 3,
+    'maxLength' => 6,
+],false);
+
+// use cached location
+$gen = PasswordGenerator::CACHED('mywords.json');
 
 // generate a password with custom pattern
 echo $gen->generate('wiwsw'), "\n";

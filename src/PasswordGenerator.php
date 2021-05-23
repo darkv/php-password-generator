@@ -50,7 +50,7 @@ class PasswordGenerator
      *
      * @param array $params optional config array
      * @param boolean $fetch true if data from URL should be fetched, false to
-     * use only cached wordlist; defaults to true
+     * prefer cached wordlist; defaults to true
      *
      * @throws InvalidArgumentException if the URL is not valid
      */
@@ -59,17 +59,18 @@ class PasswordGenerator
         foreach ($params as $key => $value) {
             $this->$key = $value;
         }
-        if ($fetch) {
-            if (!isset($this->url) || !filter_var($this->url, FILTER_VALIDATE_URL)) {
-                throw new InvalidArgumentException(sprintf('Invalid URL: %s', $this->url));
-            }
-            if ($this->minLength > $this->maxLength) {
-                throw new InvalidArgumentException(sprintf('Invalid word lengths: min=%s max=%s', $this->minLength, $this->maxLength));
-            }
-            $this->populate_wordlist();
-        } else {
+        if (!$fetch) {
             $this->read_wordlist();
+            if (!empty($this->wordList)) return;
         }
+        // if cache failed retrieve anyway
+        if (!isset($this->url) || !filter_var($this->url, FILTER_VALIDATE_URL)) {
+            throw new InvalidArgumentException(sprintf('Invalid URL: %s', $this->url));
+        }
+        if ($this->minLength > $this->maxLength) {
+            throw new InvalidArgumentException(sprintf('Invalid word lengths: min=%s max=%s', $this->minLength, $this->maxLength));
+        }
+        $this->populate_wordlist();
     }
 
     /**
@@ -174,9 +175,13 @@ class PasswordGenerator
      * @static
      * @return PasswordGenerator configured instance that uses cache only
      */
-    public static function CACHED(): PasswordGenerator
+    public static function CACHED(string $wordCacheFile = null): PasswordGenerator
     {
-        return new self([], false);
+        $a = [];
+        if ( !empty($wordCacheFile) ) {
+            $a['wordCacheFile'] = $wordCacheFile;
+        }
+        return new self($a, false);
     }
 
     /**
