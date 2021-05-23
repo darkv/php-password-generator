@@ -175,6 +175,8 @@ class PasswordGenerator
      * appropriate file <i>wordlist.json</i> present.
      *
      * @static
+     * @param $wordCacheFile path of custom cache file to use, defaults to default
+     * wordlist.json file
      * @return PasswordGenerator configured instance that uses cache only
      */
     public static function CACHED(string $wordCacheFile = null): PasswordGenerator

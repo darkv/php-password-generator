@@ -73,11 +73,11 @@ $gen = new PasswordGenerator([
 ]);
 ```
 
-The params *minLength* and *maxLength* denote the allowed lengths of the words from the URL source to get into the word list. If a word list has been successfully built that list is saved into the file `wordlist.json`. The next time you create an instance of PasswordGenerator and the URL source cannot be contacted or does not contain any usable words that cached list is loaded instead. If you reuse the very same instance the word list is reused so no further HTTP requests are generated.
+The params *minLength* and *maxLength* denote the allowed lengths of the words from the URL source to get into the word list. If a word list has been successfully built that list is saved into the file `wordlist.json`. The next time you create an instance of PasswordGenerator and the URL source cannot be contacted or does not contain any usable words that cached list is loaded instead. If you reuse the very same instance the word list is also reused so no further HTTP requests are generated.
 
-The not required param *wordCacheFile* specified the location where the wordlist will be cached.
+Optionally you can specify *wordCacheFile* to control the location and name of the cached wordlist.
 
-Second argument to custom instance can be a boolean *fetch* when false, cached wordlist will be preferred.
+To a custom instance you can pass an optional boolean parameter *fetch*. When false, the cached wordlist will be preferred but falls back to fetching if it could not be loaded.
 
 ```php
 include 'PasswordGenerator.php';
@@ -106,7 +106,7 @@ $gen = PasswordGenerator::CACHED();
 echo $gen->generate();
 ```
 
-Location of the cache file can be passed to `CACHED`, bydefault wordlist.json in work dir will be used.
+Location of the cache file can be passed as parameter to `CACHED`, by default wordlist.json in work dir will be used.
 
 ### URL Sources
 

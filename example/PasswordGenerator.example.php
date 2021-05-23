@@ -46,7 +46,7 @@ $gen = new PasswordGenerator([
     'maxLength'     => 6,
 ], false);
 
-// use cached location
+// use custom cache file
 $gen = PasswordGenerator::CACHED('mywords.json');
 
 // generate a password with custom pattern
