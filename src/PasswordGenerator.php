@@ -61,7 +61,9 @@ class PasswordGenerator
         }
         if (!$fetch) {
             $this->read_wordlist();
-            if (!empty($this->wordList)) return;
+            if (!empty($this->wordList)) {
+                return;
+            }
         }
         // if cache failed retrieve anyway
         if (!isset($this->url) || !filter_var($this->url, FILTER_VALIDATE_URL)) {
@@ -178,7 +180,7 @@ class PasswordGenerator
     public static function CACHED(string $wordCacheFile = null): PasswordGenerator
     {
         $a = [];
-        if ( !empty($wordCacheFile) ) {
+        if (!empty($wordCacheFile)) {
             $a['wordCacheFile'] = $wordCacheFile;
         }
         return new self($a, false);
