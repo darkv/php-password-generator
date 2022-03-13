@@ -1,6 +1,7 @@
 {
   "name": "darkv/php-password-generator",
   "description": "The PHP class PasswordGenerator serves as a password generator to create memorable passwords like the keychain of macOS ≤ 10.14 did.",
+  "keywords": ["password", "memorable password", "memorable password generator", "password generator", "generator"],
   "type": "library",
   "authors": [
     {
