@@ -51,11 +51,15 @@ class PasswordGenerator
      * @param array $params optional config array
      * @param boolean $fetch true if data from URL should be fetched, false to
      * prefer cached wordlist; defaults to true
+     * @param boolean $verbose true if suppressed error messages should be
+     * printed; defaults to false
      *
      * @throws InvalidArgumentException if the URL is not valid
      */
-    public function __construct(array $params = [], bool $fetch = true)
+    public function __construct(array $params = [], bool $fetch = true, bool $verbose = false)
     {
+        $this->verbose = $verbose;
+        set_error_handler(array($this, 'error_handler'));
         foreach ($params as $key => $value) {
             $this->$key = $value;
         }
@@ -241,6 +245,17 @@ class PasswordGenerator
         }
 
         return $result;
+    }
+
+    private function error_handler(int $error_level, string $error_message): bool
+    {
+        if (error_reporting() !== 0) {
+            return false;
+        }
+        if ($this->verbose) {
+            echo 'WARN ', $error_message, "\n";
+        }
+        return true;
     }
 
 }
