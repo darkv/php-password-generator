@@ -17,7 +17,7 @@ composer require darkv/php-password-generator
 Copy the file *PasswordGenerator.php* into your project and include it in your own PHP file(s) with `include 'PasswordGenerator.php';`. Then create an instance either by using the predefined static methods for specific languages or customize it yourself by using the standard constructor.
 
 ```php
-include 'PasswordGenerator.class.php';
+include 'PasswordGenerator.php';
 
 // Import the namespace
 use \Darkv\PhpPasswordGenerator\PasswordGenerator;
@@ -52,7 +52,7 @@ If you don't provide your own pattern the default pattern **wisw** is used. Some
 
 ## Word Lists
 
-The class uses RSS feeds to build a word list from which random words are used for password generation. The class has some predefined configuration for the languages English and German but can be customized too:
+The class uses RSS feeds to build a word list from which random words are used for password generation. The class has some predefined configurations for the languages English and German but can be customized too:
 
 ```php
 include 'PasswordGenerator.php';
@@ -73,7 +73,7 @@ $gen = new PasswordGenerator([
 ]);
 ```
 
-The params *minLength* and *maxLength* denote the allowed lengths of the words from the URL source to get into the word list. If a word list has been successfully built that list is saved into the file `wordlist.json`. The next time you create an instance of PasswordGenerator and the URL source cannot be contacted or does not contain any usable words that cached list is loaded instead. If you reuse the very same instance the word list is also reused so no further HTTP requests are generated.
+The params *minLength* and *maxLength* denote the allowed lengths of the words from the URL source to get into the word list. If a word list has been successfully built, that list is saved into the file `wordlist.json`. The next time you create an instance of PasswordGenerator and the URL source cannot be contacted or does not contain any usable words that cached list is loaded instead. If you reuse the very same instance the word list is also reused so no further HTTP requests are generated.
 
 Optionally you can specify *wordCacheFile* to control the location and name of the cached wordlist.
 
