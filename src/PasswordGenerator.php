@@ -126,7 +126,7 @@ class PasswordGenerator
      */
     private function save_wordlist()
     {
-        file_put_contents($this->wordCacheFile, json_encode($this->wordList));
+        @file_put_contents($this->wordCacheFile, json_encode($this->wordList));
     }
 
     /**
