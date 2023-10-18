@@ -22,7 +22,7 @@ include 'PasswordGenerator.php';
 // Import the namespace
 use \Darkv\PhpPasswordGenerator\PasswordGenerator;
 
-// create instance with English word list
+// create instance with an English word list
 $gen = PasswordGenerator::EN();
 
 // generate a password
@@ -110,7 +110,7 @@ Location of the cache file can be passed as parameter to `CACHED`, by default wo
 
 ### URL Sources
 
-As source for word lists this class uses a configurable RSS feed. The feed has to be in XML format and contain *description* tags from which the textual content is extracted.
+As a source for word lists, this class uses a configurable RSS feed. The feed has to be in XML format and contain *description* tags from which the textual content is extracted.
 
 ## License
 

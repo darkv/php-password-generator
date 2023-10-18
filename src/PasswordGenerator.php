@@ -10,17 +10,19 @@ use InvalidArgumentException;
 
 /**
  * A password generator that generates memorable passwords similar to the
- * keychain of macOS ≤ 10.14. For this it uses a public RSS feed to build up a list of
+ * keychain of macOS ≤ 10.14.
+ * For this, it uses a public RSS feed to build up a list of
  * words to be used in passwords.
  *
- * After successfully creating a list of words that list is written to disk
- * in the file <i>wordlist.json</i>. The next time you create an instance
+ * After successfully creating a list of words, that list is written to disk
+ * in the file <i>wordlist.json</i>.
+ * The next time you create an instance
  * of this class and the URL is unavailable that cached version is then used.
  *
  * Consecutive password generations with the very same instance won't
  * recreate the word list but reuse the former one.
  *
- * @example ../example/PasswordGenerator.example.php example Class in action.
+ * @example ./example/PasswordGenerator.example.php example Class in action.
  *
  * @author Johann Häger <johann.haeger@posteo.de>
  * @version 2.0.2
@@ -29,11 +31,29 @@ use InvalidArgumentException;
  */
 class PasswordGenerator
 {
+    /** @var string $url Url of word ressource */
     private string $url;
+
+    /** @var int $minLength Minimum length of a password */
     private int $minLength;
+
+    /** @var int $maxLength Maximum length of a password */
     private int $maxLength;
+
+    /** @var array $wordList Cache of the words */
     private array $wordList = [];
+
+    /** @var string $wordCacheFile Filename of the cache file */
     private string $wordCacheFile = 'wordlist.json';
+
+    /** @var bool $follow_redirects Follow redirects in case, the ressource moved */
+    private bool $follow_redirects = false;
+
+    /** @var int $allowed_redirects Number of redirects the script will follow */
+    private int $allowed_redirects = 2;
+
+    /** @var bool $verbose */
+    private bool $verbose;
 
     /**
      * Creates an instance of the password generator. You can pass an optional
@@ -69,7 +89,7 @@ class PasswordGenerator
                 return;
             }
         }
-        // if cache failed retrieve anyway
+        // if cache failed retrieves anyway
         if (!isset($this->url) || !filter_var($this->url, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException(sprintf('Invalid URL: %s', $this->url));
         }
@@ -80,38 +100,66 @@ class PasswordGenerator
     }
 
     /**
-     * Populate the wordlist
+     * Reads in the wordlist from the filesystem.
      */
-    private function populate_wordlist()
+    private function read_wordlist()
     {
-        $input = $this->get_url_data($this->url);
-        $doc = new DOMDocument();
-        @$doc->loadXML($input);
-        $descriptions = $doc->getElementsByTagName('description');
-        $wordlist = array();
-        foreach ($descriptions as $description) {
-            $text = $description->textContent;
-            $words = explode(' ', $text);
-            foreach ($words as $word) {
-                $cleanword = preg_replace('/[,.;:?!\'"]+/', '', trim($word));
-                $wordlength = strlen($cleanword);
-
-                if ($wordlength >= $this->minLength && $wordlength <= $this->maxLength && ctype_alpha($cleanword)) {
-                    $wordlist[strtoupper(substr($cleanword, 0, 1)) . strtolower(substr($cleanword, 1))] = 1;
+        if (file_exists($this->wordCacheFile)) {
+            try {
+                $this->wordList = json_decode(file_get_contents($this->wordCacheFile), true);
+            } catch (Exception $e) {
+                if ($this->verbose) {
+                    echo 'WARN ', $e->getMessage(), "\n";
                 }
             }
-        }
-        $this->wordList = array_keys($wordlist);
-
-        if (count($wordlist) > 0) {
-            $this->save_wordlist();
         }
     }
 
     /**
-     *
-     * @param $url
-     * @return bool|string
+     * Populate the wordlist from the URL.
+     * @return void
+     */
+    private function populate_wordlist(): void
+    {
+        try {
+            $input = $this->get_url_data($this->url);
+
+            if (empty($input)) {
+                throw new Exception('Empty input. Check URL.');
+            }
+
+            $doc = new DOMDocument();
+            $doc->loadXML($input);
+            $descriptions = $doc->getElementsByTagName('description');
+            $wordlist = array();
+            foreach ($descriptions as $description) {
+                $text = $description->textContent;
+                $words = explode(' ', $text);
+                foreach ($words as $word) {
+                    $cleanword = preg_replace('/[,.;:?!\'"]+/', '', trim($word));
+                    $wordlength = strlen($cleanword);
+
+                    if ($wordlength >= $this->minLength && $wordlength <= $this->maxLength && ctype_alpha($cleanword)) {
+                        $wordlist[strtoupper(substr($cleanword, 0, 1)) . strtolower(substr($cleanword, 1))] = 1;
+                    }
+                }
+            }
+            $this->wordList = array_keys($wordlist);
+
+            if (count($wordlist) > 0) {
+                $this->save_wordlist();
+            }
+        } catch (Exception $e) {
+            if ($this->verbose) {
+                echo 'WARN ', $e->getMessage(), "\n";
+            }
+        }
+    }
+
+    /**
+     * Fetches data from the given URL.
+     * @param string $url
+     * @return string
      */
     private function get_url_data(string $url): string
     {
@@ -119,6 +167,12 @@ class PasswordGenerator
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+
+        if ($this->follow_redirects) {
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_MAXREDIRS, $this->allowed_redirects);
+        }
+
         $data = curl_exec($ch);
         curl_close($ch);
 
@@ -127,50 +181,47 @@ class PasswordGenerator
 
     /**
      * Saves the wordlist to filesystem.
+     * @return void
      */
-    private function save_wordlist()
+    private function save_wordlist(): void
     {
-        @file_put_contents($this->wordCacheFile, json_encode($this->wordList));
-    }
-
-    /**
-     * Reads in the wordlist from the filesystem.
-     */
-    private function read_wordlist()
-    {
-        if (file_exists($this->wordCacheFile)) {
-            $this->wordList = json_decode(file_get_contents($this->wordCacheFile), true);
+        try {
+            file_put_contents($this->wordCacheFile, json_encode($this->wordList));
+        } catch (Exception $e) {
+            if ($this->verbose) {
+                echo 'WARN ', $e->getMessage(), "\n";
+            }
         }
     }
 
     /**
      * Creates an instance of password generator that will use German wordlist.
-     *
+     * @param array|null $params optional config array
      * @static
      * @return PasswordGenerator configured instance
      */
-    public static function DE(): PasswordGenerator
+    public static function DE(?array $params = []): PasswordGenerator
     {
         return new self([
-            'url'       => 'https://www.tagesschau.de/newsticker.rdf',
-            'minLength' => 8,
-            'maxLength' => 15,
-        ]);
+                'url'       => 'https://www.tagesschau.de/newsticker.rdf',
+                'minLength' => 8,
+                'maxLength' => 15,
+            ] + $params);
     }
 
     /**
      * Creates an instance of password generator that will use English wordlist.
-     *
+     * @param array|null $params optional config array
      * @static
      * @return PasswordGenerator configured instance
      */
-    public static function EN(): PasswordGenerator
+    public static function EN(?array $params = []): PasswordGenerator
     {
         return new self([
-            'url'       => 'https://rss.dw.com/rdf/rss-en-all',
-            'minLength' => 4,
-            'maxLength' => 12,
-        ]);
+                'url'       => 'https://rss.dw.com/rdf/rss-en-all',
+                'minLength' => 4,
+                'maxLength' => 12,
+            ] + $params);
     }
 
     /**
@@ -179,17 +230,17 @@ class PasswordGenerator
      * appropriate file <i>wordlist.json</i> present.
      *
      * @static
-     * @param $wordCacheFile path of custom cache file to use, defaults to default
-     * wordlist.json file
-     * @return PasswordGenerator configured instance that uses cache only
+     * @param string|null $wordCacheFile path of custom cache file to use, defaults to default wordlist.json file
+     * @param array|null $params
+     * @return PasswordGenerator configured instance
      */
-    public static function CACHED(string $wordCacheFile = null): PasswordGenerator
+    public static function CACHED(string $wordCacheFile = null, ?array $params = []): PasswordGenerator
     {
         $a = [];
         if (!empty($wordCacheFile)) {
             $a['wordCacheFile'] = $wordCacheFile;
         }
-        return new self($a, false);
+        return new self($a + $params, false);
     }
 
     /**
@@ -247,6 +298,12 @@ class PasswordGenerator
         return $result;
     }
 
+    /**
+     * Handles errors.
+     * @param int $error_level
+     * @param string $error_message
+     * @return bool
+     */
     private function error_handler(int $error_level, string $error_message): bool
     {
         if (error_reporting() !== 0) {
