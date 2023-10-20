@@ -112,6 +112,49 @@ Location of the cache file can be passed as parameter to `CACHED`, by default wo
 
 As a source for word lists, this class uses a configurable RSS feed. The feed has to be in XML format and contain *description* tags from which the textual content is extracted.
 
+### HTTP Redirects
+
+If, for security reasons, you want to prevent PasswordGenerator to follow redirects when fetching the given URL, you can set the parameter *httpRedirects* to *0*. The default is *2* which follows a maximum of two redirects.
+
+Example:
+```php
+include 'PasswordGenerator.php';
+
+use \Darkv\PhpPasswordGenerator\PasswordGenerator;
+
+// create instance with custom parameters
+$gen = new PasswordGenerator([
+	'url'           => 'https://www.some-url.com/source',
+	'minLength'     => 3,
+	'maxLength'     => 6,
+	'httpRedirects' => 0,
+]);
+```
+
+## Parameters
+
+When creating an instance of PasswordGenerator you can provide the following parameters:
+
+* **url**
+
+  The URL to use to retrieve some document to extract words from.
+
+* **minLength**
+
+  The minimum number of characters a word must have to be included into the word list.
+
+* **maxLength**
+
+  The maximum number of characters a word may have to be included into the word list.
+
+* **wordCacheFile**
+
+  The name for the cache file. Defaults to ‘wordlist.json’.
+
+* **httpRedirects**
+
+  Controls if and how many HTTP redirects should be followed during URL access. Defaults to *2*. To prevent following redirects set its value to *0*.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.

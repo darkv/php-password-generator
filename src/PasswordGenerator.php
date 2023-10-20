@@ -63,6 +63,10 @@ class PasswordGenerator
      *   <dd>The miminum length of characters a word must have.</dd>
      *   <dt>maxlength</dt>
      *   <dd>The maxinum length of characters a word must have.</dd>
+     *   <dt>wordCacheFile</dt>
+     *   <dd>Filename of the cache file.</dd>
+     *   <dt>httpRedirects</dt>
+     *   <dd>Number of maximum HTTP redirects the script will follow.</dd>
      * </dl>
      *
      * @param array $params optional config array
