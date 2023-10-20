@@ -108,9 +108,7 @@ class PasswordGenerator
             try {
                 $this->wordList = json_decode(file_get_contents($this->wordCacheFile), true);
             } catch (Exception $e) {
-                if ($this->verbose) {
-                    echo 'WARN ', $e->getMessage(), "\n";
-                }
+                $this->warn($e->getMessage());
             }
         }
     }
@@ -150,9 +148,7 @@ class PasswordGenerator
                 $this->save_wordlist();
             }
         } catch (Exception $e) {
-            if ($this->verbose) {
-                echo 'WARN ', $e->getMessage(), "\n";
-            }
+            $this->warn($e->getMessage());
         }
     }
 
@@ -188,9 +184,7 @@ class PasswordGenerator
         try {
             file_put_contents($this->wordCacheFile, json_encode($this->wordList));
         } catch (Exception $e) {
-            if ($this->verbose) {
-                echo 'WARN ', $e->getMessage(), "\n";
-            }
+            $this->warn($e->getMessage());
         }
     }
 
@@ -309,10 +303,14 @@ class PasswordGenerator
         if (error_reporting() !== 0) {
             return false;
         }
-        if ($this->verbose) {
-            echo 'WARN ', $error_message, "\n";
-        }
+        $this->warn($error_message);
         return true;
     }
 
+    private function warn(string $error_message): void
+    {
+        if ($this->verbose) {
+            echo 'WARN ', $error_message, "\n";
+        }
+    }
 }
