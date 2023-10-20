@@ -19,6 +19,7 @@
   "require": {
 	"php" : ">=7.4",
     "ext-curl": "*",
-    "ext-dom": "*"
+    "ext-dom": "*",
+    "ext-json": "*"
   }
 }
