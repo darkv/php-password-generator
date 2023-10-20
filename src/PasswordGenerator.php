@@ -46,11 +46,8 @@ class PasswordGenerator
     /** @var string $wordCacheFile Filename of the cache file */
     private string $wordCacheFile = 'wordlist.json';
 
-    /** @var bool $follow_redirects Follow redirects in case the resource moved */
-    private bool $follow_redirects = false;
-
-    /** @var int $allowed_redirects Number of maximum redirects the script will follow */
-    private int $allowed_redirects = 2;
+    /** @var int $httpRedirects Number of maximum HTTP redirects the script will follow */
+    private int $httpRedirects = 2;
 
     /** @var bool $verbose */
     private bool $verbose;
@@ -164,9 +161,9 @@ class PasswordGenerator
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 
-        if ($this->follow_redirects) {
+        if ($this->httpRedirects > 0) {
             curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_MAXREDIRS, $this->allowed_redirects);
+            curl_setopt($ch, CURLOPT_MAXREDIRS, $this->httpRedirects);
         }
 
         $data = curl_exec($ch);
@@ -200,7 +197,6 @@ class PasswordGenerator
                 'url'       => 'https://www.tagesschau.de/newsticker.rdf',
                 'minLength' => 8,
                 'maxLength' => 15,
-                'follow_redirects' => true,
             ] + $params);
     }
 
