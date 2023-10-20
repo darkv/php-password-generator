@@ -200,6 +200,7 @@ class PasswordGenerator
                 'url'       => 'https://www.tagesschau.de/newsticker.rdf',
                 'minLength' => 8,
                 'maxLength' => 15,
+                'follow_redirects' => true,
             ] + $params);
     }
 
